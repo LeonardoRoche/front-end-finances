@@ -9,12 +9,13 @@ export type TransactionType =
   | "Subscriptions";
 
 export type TransactionProps = {
-  Title: string;
-  Amount: number;
-  Date: string;
-  Type: TransactionType;
+  title: string;
+  amount: number;
+  date: string;
+  type: TransactionType;
 };
 
+// Cores de categoria não usam destructive/warning: essas são reservadas para status.
 export const categoryConfig: Record<
   TransactionType,
   { icon: React.ReactNode; label: string; iconBg: string; iconColor: string }
@@ -22,8 +23,8 @@ export const categoryConfig: Record<
   Food: {
     icon: <ShoppingCart size={18} />,
     label: "Alimentação",
-    iconBg: "bg-destructive/10",
-    iconColor: "text-destructive",
+    iconBg: "bg-orange-500/10",
+    iconColor: "text-orange-600 dark:text-orange-400",
   },
   Income: {
     icon: <Briefcase size={18} />,
@@ -34,46 +35,46 @@ export const categoryConfig: Record<
   "Fixed Expenses": {
     icon: <Zap size={18} />,
     label: "Despesas Fixas",
-    iconBg: "bg-warning/10",
-    iconColor: "text-warning",
+    iconBg: "bg-blue-500/10",
+    iconColor: "text-blue-600 dark:text-blue-400",
   },
   Subscriptions: {
     icon: <Tv size={18} />,
     label: "Assinaturas",
-    iconBg: "bg-primary/10",
-    iconColor: "text-primary",
+    iconBg: "bg-purple-500/10",
+    iconColor: "text-purple-600 dark:text-purple-400",
   },
 };
 
 export const Transactions = ({
-  Title,
-  Amount,
-  Date,
-  Type,
+  title,
+  amount,
+  date,
+  type,
 }: TransactionProps) => {
-  const { icon, label, iconBg, iconColor } = categoryConfig[Type];
-  const isIncome = Type === "Income";
+  const { icon, label, iconBg, iconColor } = categoryConfig[type];
+  const isIncome = type === "Income";
 
   return (
-    <div className="flex items-center justify-between border-b border-border py-3 last:border-b-0">
-      <div className="flex items-center gap-3">
+    <div className="flex items-center justify-between gap-3 border-b border-border py-3 last:border-b-0">
+      <div className="flex min-w-0 items-center gap-3">
         <div
-          className={`flex size-10 items-center justify-center rounded-full ${iconBg} ${iconColor}`}
+          className={`flex size-10 shrink-0 items-center justify-center rounded-full ${iconBg} ${iconColor}`}
         >
           {icon}
         </div>
-        <div>
-          <h3 className="text-sm font-medium">{Title}</h3>
+        <div className="min-w-0">
+          <h3 className="truncate text-sm font-medium">{title}</h3>
           <p className="text-xs text-muted-foreground">
-            {label} · {formatarDataAbreviada(Date)}
+            {label} · {formatarDataAbreviada(date)}
           </p>
         </div>
       </div>
       <p
-        className={`text-sm font-semibold ${isIncome ? "text-success" : "text-destructive"}`}
+        className={`shrink-0 text-sm font-semibold tabular-nums ${isIncome ? "text-success" : ""}`}
       >
         {isIncome ? "+" : "-"}
-        {formatarParaBRLCode(Amount)}
+        {formatarParaBRLCode(amount)}
       </p>
     </div>
   );

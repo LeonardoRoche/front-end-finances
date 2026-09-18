@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Select,
   SelectContent,
@@ -18,12 +20,13 @@ import { Input } from "@/app/components/ui/input";
 import { budgetCategories } from "../constants";
 
 export const BudgetDialog = () => {
+  function handleCreateBudget() {}
   return (
     <DialogContent>
       <DialogHeader>
         <DialogTitle>Novo orçamento</DialogTitle>
       </DialogHeader>
-      <div className="grid grid-cols-2 gap-4 py-4">
+      <div className="grid grid-cols-1 gap-4 py-4 sm:grid-cols-2">
         <div className="grid gap-1.5">
           <Label htmlFor="category">Categoria</Label>
           <Select>
@@ -74,7 +77,7 @@ export const BudgetDialog = () => {
 
       <DialogFooter>
         <DialogClose render={<Button variant="outline">Cancelar</Button>} />
-        <Button>Criar orçamento</Button>
+        <Button onClick={handleCreateBudget}>Criar orçamento</Button>
       </DialogFooter>
     </DialogContent>
   );

@@ -1,46 +1,65 @@
+import { TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import { Card, CardContent } from "@/app/components/ui/card";
+import { formatarParaBRLCode } from "@/app/lib/utils/CurrencyFormater";
+
 type KpiCardsProps = {
-  TotalValue: string;
-  monthlyRevenue: string;
-  MonthlyExpenses: string;
+  totalValue: number;
+  monthlyRevenue: number;
+  monthlyExpenses: number;
 };
 
 export const KpiCards = ({
-  TotalValue,
+  totalValue,
   monthlyRevenue,
-  MonthlyExpenses,
+  monthlyExpenses,
 }: KpiCardsProps) => {
-  const ValueColor = (value: string) => {
-    const AmountTotal = parseFloat(monthlyRevenue.replace(/[^\d.-]/g, ""));
-    const numericValue = parseFloat(value.replace(/[^\d.-]/g, ""));
-    return numericValue <= AmountTotal ? "text-success" : "text-destructive";
-  };
+  const kpis = [
+    {
+      label: "Saldo total",
+      value: totalValue,
+      icon: <Wallet size={16} />,
+      chip:
+        totalValue >= 0
+          ? "bg-success/10 text-success"
+          : "bg-destructive/10 text-destructive",
+    },
+    {
+      label: "Receita mensal",
+      value: monthlyRevenue,
+      icon: <TrendingUp size={16} />,
+      chip: "bg-success/10 text-success",
+    },
+    {
+      label: "Despesas mensais",
+      value: monthlyExpenses,
+      icon: <TrendingDown size={16} />,
+      chip: "bg-destructive/10 text-destructive",
+    },
+  ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-      <div className="rounded-lg bg-card p-4 shadow">
-        <h3 className="text-sm font-medium text-muted-foreground">
-          Saldo total
-        </h3>
-        <p className={`text-2xl font-semibold ${ValueColor(TotalValue)}`}>
-          {TotalValue}
-        </p>
-      </div>
-      <div className="rounded-lg bg-card p-4 shadow">
-        <h3 className="text-sm font-medium text-muted-foreground">
-          Receita Mensal
-        </h3>
-        <p className={`text-2xl font-semibold ${ValueColor(monthlyRevenue)}`}>
-          {monthlyRevenue}
-        </p>
-      </div>
-      <div className="rounded-lg bg-card p-4 shadow">
-        <h3 className="text-sm font-medium text-muted-foreground">
-          Despesas Mensais
-        </h3>
-        <p className={`text-2xl font-semibold ${ValueColor(MonthlyExpenses)}`}>
-          {MonthlyExpenses}
-        </p>
-      </div>
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      {kpis.map((kpi) => (
+        <Card key={kpi.label}>
+          <CardContent className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                {kpi.label}
+              </h3>
+              <div
+                className={`flex size-8 items-center justify-center rounded-full ${kpi.chip}`}
+              >
+                {kpi.icon}
+              </div>
+            </div>
+            <p
+              className={`text-2xl font-semibold tabular-nums ${kpi.value < 0 ? "text-destructive" : ""}`}
+            >
+              {formatarParaBRLCode(kpi.value)}
+            </p>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 };

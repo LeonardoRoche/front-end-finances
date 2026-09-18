@@ -1,22 +1,40 @@
-import { categoryConfig, TransactionProps } from "./Transactions";
+import { BudgetProgress } from "@/app/components/budget/BudgetProgress";
+import { formatarParaBRLCode } from "@/app/lib/utils/CurrencyFormater";
+import { categoryConfig, TransactionType } from "./Transactions";
 
-export const Budgets = ({
-  Type,
-  Amount,
-}: Pick<TransactionProps, "Type" | "Amount">) => {
-  const label = categoryConfig[Type].label;
+type BudgetsProps = {
+  type: TransactionType;
+  amount: number;
+  limit: number;
+};
+
+export const Budgets = ({ type, amount, limit }: BudgetsProps) => {
+  const { label, icon, iconBg, iconColor } = categoryConfig[type];
 
   return (
-    <div className="flex items-center justify-between border-b border-border py-3 last:border-b-0">
-      <div className="flex items-center gap-3">
-        <div>
-          <h3 className="text-sm font-medium">{label}</h3>
-          <p className="bg-emerald-400 w-full h-2 rounded-full"></p>
+    <div className="flex flex-col gap-2 border-b border-border py-3 last:border-b-0">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <div
+            className={`flex size-10 shrink-0 items-center justify-center rounded-full ${iconBg} ${iconColor}`}
+          >
+            {icon}
+          </div>
+          <h3 className="truncate text-sm font-medium">{label}</h3>
         </div>
+        <p className="shrink-0 text-sm tabular-nums">
+          <span className="font-semibold">{formatarParaBRLCode(amount)}</span>
+          <span className="text-muted-foreground">
+            {" "}
+            / {formatarParaBRLCode(limit)}
+          </span>
+        </p>
       </div>
-      <p className={`text-sm font-semibold`}>
-        R$ {Amount.toFixed(2).replace(".", ",")} / R$ 1000,00
-      </p>
+      <BudgetProgress
+        spent={amount}
+        limit={limit}
+        label={`Uso do orçamento de ${label}`}
+      />
     </div>
   );
 };

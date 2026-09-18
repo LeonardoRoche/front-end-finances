@@ -1,37 +1,56 @@
+import { Card } from "@/app/components/ui/card";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
+import { formatarParaBRLCode } from "@/app/lib/utils/CurrencyFormater";
+import { formatarDataAbreviada } from "@/app/lib/utils/DateFormatter";
+import { transactions } from "../constants";
 
 export const TransactionsTable = () => {
   return (
-    <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">Descrição</TableHead>
-          <TableHead className="w-[100px]">Categoria</TableHead>
-          <TableHead className="w-[100px]">Conta</TableHead>
-          <TableHead className="w-[100px]">Data</TableHead>
-          <TableHead className="w-[100px]">Valor</TableHead>
-          <TableHead className="w-[100px]">Ações</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow>
-          <TableCell className="font-medium">Supermercado</TableCell>
-          <TableCell>Alimentação</TableCell>
-          <TableCell>Cartão de crédito</TableCell>
-          <TableCell>18/09/2026</TableCell>
-          <TableCell>R$ 250,00</TableCell>
-          <TableCell>—</TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
+    <Card className="gap-0 py-2">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="pl-4">Descrição</TableHead>
+            <TableHead className="hidden sm:table-cell">Categoria</TableHead>
+            <TableHead className="hidden md:table-cell">Conta</TableHead>
+            <TableHead>Data</TableHead>
+            <TableHead className="pr-4 text-right">Valor</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {transactions.map((item) => {
+            const isIncome = item.amount > 0;
+
+            return (
+              <TableRow key={item.id}>
+                <TableCell className="pl-4 font-medium">
+                  {item.description}
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  {item.category}
+                </TableCell>
+                <TableCell className="hidden md:table-cell">
+                  {item.account}
+                </TableCell>
+                <TableCell>{formatarDataAbreviada(item.date)}</TableCell>
+                <TableCell
+                  className={`pr-4 text-right font-medium tabular-nums ${isIncome ? "text-success" : ""}`}
+                >
+                  {isIncome ? "+" : "-"}
+                  {formatarParaBRLCode(Math.abs(item.amount))}
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </Card>
   );
 };
