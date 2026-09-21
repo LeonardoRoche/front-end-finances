@@ -1,58 +1,143 @@
+"use client";
+
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import { BudgetUse } from "./BudgetUse";
 import { BudgetDialog } from "./BudgetDialog";
 import { Button } from "@/app/components/ui/button";
 import { Dialog, DialogTrigger } from "@/app/components/ui/dialog";
+import { ConfirmDeleteDialog } from "@/app/components/ui/confirm-delete-dialog";
 import { PageHeader } from "@/app/components/layout/PageHeader";
-import { budgetCategories } from "../constants";
+import { Skeleton } from "@/app/components/ui/skeleton";
+import { useBudgets, useDeleteBudget } from "@/app/lib/hooks/use-budgets";
+import { getCategoryConfig } from "@/app/lib/categories";
+import { formatMonthLabel, getCurrentMonth } from "@/app/lib/utils/month";
+import type { Budget } from "@/app/lib/api/types";
 
 export const BudgetPageContent = () => {
-  function handleAddCategory() {
-    // Lógica para adicionar uma nova categoria de orçamento
+  const [createOpen, setCreateOpen] = useState(false);
+  const [editingBudget, setEditingBudget] = useState<Budget | null>(null);
+  const [deletingBudget, setDeletingBudget] = useState<Budget | null>(null);
+
+  const month = getCurrentMonth();
+  const { data: budgets = [], isLoading, isError } = useBudgets(undefined, month);
+  const deleteBudget = useDeleteBudget();
+
+  function handleDelete() {
+    if (!deletingBudget) {
+      return;
+    }
+
+    deleteBudget.mutate(deletingBudget.id, {
+      onSuccess: () => {
+        setDeletingBudget(null);
+        setEditingBudget(null);
+      },
+    });
   }
 
   return (
-    <Dialog>
-      <div className="flex flex-col gap-6">
-        <PageHeader
-          title="Orçamentos"
-          description="Setembro 2026"
-          action={
-            <DialogTrigger
-              render={
-                <Button size="lg">
-                  <Plus /> Adicionar orçamento
-                </Button>
-              }
-            />
-          }
-        />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {budgetCategories.map((item) => (
-            <BudgetUse
-              key={item.title}
-              amount={item.amount}
-              title={item.title}
-              icon={item.icon}
-              totalAmount={item.totalAmount}
-              iconBg={item.iconBg}
-              iconColor={item.iconColor}
-            />
-          ))}
-          <DialogTrigger
-            render={
-              <Button
-                variant="outline"
-                className="h-auto min-h-32 flex-col gap-2 rounded-xl border-dashed border-muted-foreground/40 bg-transparent p-4 text-muted-foreground hover:border-primary hover:text-primary"
-              >
-                <Plus size={20} />
-                <span className="text-sm font-medium">Adicionar categoria</span>
-              </Button>
+    <>
+      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+        <div className="flex flex-col gap-6">
+          <PageHeader
+            title="Orçamentos"
+            description={formatMonthLabel(month)}
+            action={
+              <DialogTrigger
+                render={
+                  <Button size="lg">
+                    <Plus /> Adicionar orçamento
+                  </Button>
+                }
+              />
             }
           />
+
+          {isError ? (
+            <p className="text-sm text-destructive">
+              Não foi possível carregar os orçamentos.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {isLoading
+                ? Array.from({ length: 3 }).map((_, index) => (
+                    <Skeleton key={index} className="h-48 rounded-2xl" />
+                  ))
+                : budgets.length === 0 ? (
+                    <div className="surface-card col-span-full px-6 py-14 text-center">
+                      <p className="text-base font-medium">Nenhum orçamento ainda</p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Defina limites por categoria para acompanhar seus gastos.
+                      </p>
+                    </div>
+                  ) : (
+                    budgets.map((item) => {
+                      const config = getCategoryConfig(item.title);
+
+                      return (
+                        <BudgetUse
+                          key={item.id}
+                          budget={item}
+                          icon={config.icon}
+                          iconBg={config.iconBg}
+                          iconColor={config.iconColor}
+                          borderColor={config.borderColor}
+                          onEdit={setEditingBudget}
+                        />
+                      );
+                    })
+                  )}
+
+              <DialogTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    className="surface-card h-auto min-h-36 flex-col gap-2 border-dashed bg-transparent p-5 text-muted-foreground hover:border-primary hover:text-primary"
+                  >
+                    <Plus size={20} />
+                    <span className="text-sm font-medium">Adicionar categoria</span>
+                  </Button>
+                }
+              />
+            </div>
+          )}
         </div>
-      </div>
-      <BudgetDialog />
-    </Dialog>
+
+        <BudgetDialog onSuccess={() => setCreateOpen(false)} />
+      </Dialog>
+
+      <Dialog
+        open={Boolean(editingBudget) && !deletingBudget}
+        onOpenChange={(open) => !open && setEditingBudget(null)}
+      >
+        {editingBudget && !deletingBudget ? (
+          <BudgetDialog
+            budget={editingBudget}
+            onSuccess={() => setEditingBudget(null)}
+            onDelete={() => setDeletingBudget(editingBudget)}
+          />
+        ) : null}
+      </Dialog>
+
+      <ConfirmDeleteDialog
+        open={Boolean(deletingBudget)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeletingBudget(null);
+          }
+        }}
+        title="Excluir orçamento"
+        description={`Tem certeza que deseja excluir o orçamento de ${deletingBudget?.title}? Essa ação não pode ser desfeita.`}
+        onConfirm={handleDelete}
+        isPending={deleteBudget.isPending}
+      />
+
+      {deleteBudget.isError ? (
+        <p className="text-sm text-destructive">
+          Não foi possível excluir o orçamento. Tente novamente.
+        </p>
+      ) : null}
+    </>
   );
 };
