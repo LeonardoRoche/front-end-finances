@@ -17,12 +17,9 @@ const barColor: Record<BudgetStatus, string> = {
   over: "bg-destructive",
 };
 
-type BudgetProgressProps = {
-  spent: number;
-  limit: number;
-  label: string;
-  className?: string;
-};
+import type { BudgetProgressProps } from "@/app/types/budget";
+
+export type { BudgetProgressProps };
 
 export const BudgetProgress = ({
   spent,
