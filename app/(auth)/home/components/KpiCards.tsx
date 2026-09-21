@@ -53,9 +53,11 @@ const MetricCard = ({
 );
 
 export const KpiCards = ({ summary }: KpiCardsProps) => {
+  const investmentAccounts = summary.investmentAccounts ?? [];
+  const investmentTotal = summary.investmentTotal ?? 0;
   const hasAccounts = summary.bankAccounts.length > 0;
   const hasCards = summary.creditCards.length > 0;
-  const hasInvestments = summary.investmentAccounts.length > 0;
+  const hasInvestments = investmentAccounts.length > 0 && investmentTotal > 0;
 
   return (
     <div className="flex flex-col gap-4">
@@ -106,7 +108,7 @@ export const KpiCards = ({ summary }: KpiCardsProps) => {
 
         <MetricCard
           label="Total investido"
-          value={formatarParaBRLCode(summary.investmentTotal)}
+          value={formatarParaBRLCode(investmentTotal)}
           hint={
             hasInvestments
               ? "Carteira de investimentos via Open Finance"
@@ -136,12 +138,12 @@ export const KpiCards = ({ summary }: KpiCardsProps) => {
           <div className="mb-4 rounded-xl bg-muted/40 p-3">
             <p className="text-xs text-muted-foreground">Patrimônio investido</p>
             <p className="text-2xl font-bold tabular-nums">
-              {formatarParaBRLCode(summary.investmentTotal)}
+              {formatarParaBRLCode(investmentTotal)}
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            {summary.investmentAccounts.map((account) => (
+            {investmentAccounts.map((account) => (
               <div
                 key={account.id}
                 className="rounded-xl border border-border/70 bg-card p-4"
