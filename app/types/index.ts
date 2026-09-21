@@ -1,16 +1,19 @@
 export type {
   BudgetDialogProps,
+  BudgetPageContentProps,
   BudgetProgressProps,
   BudgetUseProps,
 } from "@/app/types/budget";
 
 export type {
+  ConnectionsPageContentProps,
   ConnectionStatusBadgeProps,
   PluggyConnectButtonProps,
 } from "@/app/types/connections";
 
 export type {
   BudgetPreviewProps,
+  HomePageContentProps,
   KpiCardsProps,
   ListSkeletonProps,
   MetricCardProps,
@@ -31,6 +34,7 @@ export type {
   TransactionDialogProps,
   TransactionPageFilterState,
   TransactionsFilterProps,
+  TransactionsPageContentProps,
   TransactionsTableProps,
   TransactionTypeFilterValue,
 } from "@/app/types/transaction";

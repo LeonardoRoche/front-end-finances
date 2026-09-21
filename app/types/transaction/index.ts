@@ -59,3 +59,8 @@ export type TransactionDialogProps = {
 export type NewTransactionDialogProps = {
   trigger: ReactElement;
 };
+
+export type TransactionsPageContentProps = {
+  month: string;
+  initialTransactions?: Transaction[];
+};

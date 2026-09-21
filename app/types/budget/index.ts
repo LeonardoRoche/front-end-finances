@@ -22,3 +22,8 @@ export type BudgetProgressProps = {
   label: string;
   className?: string;
 };
+
+export type BudgetPageContentProps = {
+  month: string;
+  initialBudgets?: Budget[];
+};

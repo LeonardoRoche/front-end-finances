@@ -32,3 +32,10 @@ export type TransactionPreviewProps = {
 export type BudgetPreviewProps = {
   budget: Budget;
 };
+
+export type HomePageContentProps = {
+  month: string;
+  initialSummary?: DashboardSummary;
+  initialTransactions?: Transaction[];
+  initialBudgets?: Budget[];
+};

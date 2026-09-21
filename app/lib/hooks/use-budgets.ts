@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/app/lib/api/client";
 import { queryKeys } from "@/app/lib/api/keys";
+import { fetchBudgets } from "@/app/lib/api/queries";
 import type {
   Budget,
   CreateBudgetInput,
@@ -10,20 +11,19 @@ import type {
 } from "@/app/lib/api/types";
 import { getCurrentMonth } from "@/app/lib/utils/month";
 
-function buildBudgetsQuery(limit?: number, month?: string) {
-  const params = new URLSearchParams();
+type UseBudgetsOptions = {
+  initialData?: Budget[];
+};
 
-  if (limit) params.set("limit", String(limit));
-  if (month) params.set("month", month);
-
-  const query = params.toString();
-  return query ? `/budgets?${query}` : "/budgets";
-}
-
-export function useBudgets(limit?: number, month = getCurrentMonth()) {
+export function useBudgets(
+  limit?: number,
+  month = getCurrentMonth(),
+  options: UseBudgetsOptions = {},
+) {
   return useQuery({
     queryKey: queryKeys.budgets.all(limit, month),
-    queryFn: () => api<Budget[]>(buildBudgetsQuery(limit, month)),
+    queryFn: () => fetchBudgets(limit, month),
+    initialData: options.initialData,
   });
 }
 

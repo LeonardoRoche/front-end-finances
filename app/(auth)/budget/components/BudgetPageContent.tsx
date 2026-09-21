@@ -11,16 +11,23 @@ import { PageHeader } from "@/app/components/layout/PageHeader";
 import { Skeleton } from "@/app/components/ui/skeleton";
 import { useBudgets, useDeleteBudget } from "@/app/lib/hooks/use-budgets";
 import { getCategoryConfig } from "@/app/lib/categories";
-import { formatMonthLabel, getCurrentMonth } from "@/app/lib/utils/month";
+import { formatMonthLabel } from "@/app/lib/utils/month";
 import type { Budget } from "@/app/lib/api/types";
+import type { BudgetPageContentProps } from "@/app/types/budget";
 
-export const BudgetPageContent = () => {
+export const BudgetPageContent = ({
+  month,
+  initialBudgets,
+}: BudgetPageContentProps) => {
   const [createOpen, setCreateOpen] = useState(false);
   const [editingBudget, setEditingBudget] = useState<Budget | null>(null);
   const [deletingBudget, setDeletingBudget] = useState<Budget | null>(null);
 
-  const month = getCurrentMonth();
-  const { data: budgets = [], isLoading, isError } = useBudgets(undefined, month);
+  const { data: budgets = [], isLoading, isError } = useBudgets(
+    undefined,
+    month,
+    { initialData: initialBudgets },
+  );
   const deleteBudget = useDeleteBudget();
 
   function handleDelete() {

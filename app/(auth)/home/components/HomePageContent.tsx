@@ -8,8 +8,12 @@ import { OpenFinanceBanner } from "@/app/components/layout/OpenFinanceBanner";
 import { useBudgets } from "@/app/lib/hooks/use-budgets";
 import { useDashboardSummary } from "@/app/lib/hooks/use-dashboard-summary";
 import { useTransactions } from "@/app/lib/hooks/use-transactions";
-import { formatMonthLabel, getCurrentMonth } from "@/app/lib/utils/month";
-import type { ListSkeletonProps, SectionHeaderProps } from "@/app/types/home";
+import { formatMonthLabel } from "@/app/lib/utils/month";
+import type {
+  HomePageContentProps,
+  ListSkeletonProps,
+  SectionHeaderProps,
+} from "@/app/types/home";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { KpiCards } from "./KpiCards";
@@ -40,15 +44,25 @@ const ListSkeleton = ({ rows = 3 }: ListSkeletonProps) => (
   </div>
 );
 
-export const HomePageContent = () => {
-  const month = getCurrentMonth();
-  const { data: summary, isLoading: isSummaryLoading } =
-    useDashboardSummary(month);
+export const HomePageContent = ({
+  month,
+  initialSummary,
+  initialTransactions,
+  initialBudgets,
+}: HomePageContentProps) => {
+  const { data: summary, isLoading: isSummaryLoading } = useDashboardSummary(
+    month,
+    { initialData: initialSummary },
+  );
   const { data: transactions = [], isLoading: isTransactionsLoading } =
-    useTransactions({ limit: 5, month });
+    useTransactions(
+      { limit: 5, month },
+      { initialData: initialTransactions },
+    );
   const { data: budgets = [], isLoading: isBudgetsLoading } = useBudgets(
     3,
     month,
+    { initialData: initialBudgets },
   );
 
   return (
@@ -69,14 +83,14 @@ export const HomePageContent = () => {
 
       <OpenFinanceBanner />
 
-      {isSummaryLoading || !summary ? (
+      {isSummaryLoading ? (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, index) => (
             <Skeleton key={index} className="h-32 rounded-xl" />
           ))}
         </div>
       ) : (
-        <KpiCards summary={summary} />
+        summary ? <KpiCards summary={summary} /> : null
       )}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

@@ -25,14 +25,13 @@ import { useRecategorize } from "@/app/lib/hooks/use-recategorize";
 import { Sparkles } from "lucide-react";
 
 import { formatarDataAbreviada } from "@/app/lib/utils/DateFormatter";
+import type { ConnectionsPageContentProps } from "@/app/types/connections";
 
-
-
-export const ConnectionsPageContent = () => {
-
+export const ConnectionsPageContent = ({
+  initialConnections,
+}: ConnectionsPageContentProps) => {
   const { data: connections = [], isLoading, isError, refetch } =
-
-    useConnections();
+    useConnections({ initialData: initialConnections });
 
   const syncPluggy = useSyncPluggy();
   const recategorize = useRecategorize();

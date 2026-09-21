@@ -6,7 +6,7 @@ import { Button } from "@/app/components/ui/button";
 import { NewTransactionDialog } from "./NewTransactionDialog";
 import { PageHeader } from "@/app/components/layout/PageHeader";
 import { useTransactions } from "@/app/lib/hooks/use-transactions";
-import { getCurrentMonth, periodToMonth } from "@/app/lib/utils/month";
+import { periodToMonth } from "@/app/lib/utils/month";
 import type { TransactionFilters } from "@/app/lib/api/types";
 import type {
   CategoryFilterValue,
@@ -17,10 +17,14 @@ import {
   TRANSACTION_CATEGORY_ALL,
   TRANSACTION_TYPE_ALL,
 } from "@/app/types/transaction";
+import type { TransactionsPageContentProps } from "@/app/types/transaction";
 import { TransactionsFilter } from "./TransactionsFilter";
 import { TransactionsTable } from "./TransactionsTable";
 
-export const TransactionsPageContent = () => {
+export const TransactionsPageContent = ({
+  month,
+  initialTransactions,
+}: TransactionsPageContentProps) => {
   const [search, setSearch] = useState("");
   const [type, setType] = useState<TransactionTypeFilterValue>(
     TRANSACTION_TYPE_ALL,
@@ -35,13 +39,21 @@ export const TransactionsPageContent = () => {
       search: search.trim() || undefined,
       type: type === TRANSACTION_TYPE_ALL ? undefined : type,
       category: category === TRANSACTION_CATEGORY_ALL ? undefined : category,
-      month: periodToMonth(period) ?? getCurrentMonth(),
+      month: periodToMonth(period) ?? month,
     }),
-    [search, type, category, period],
+    [search, type, category, period, month],
   );
 
-  const { data: transactions = [], isLoading, isError } =
-    useTransactions(filters);
+  const isDefaultFilters =
+    !filters.search &&
+    !filters.type &&
+    !filters.category &&
+    filters.month === month;
+
+  const { data: transactions = [], isLoading, isError } = useTransactions(
+    filters,
+    { initialData: isDefaultFilters ? initialTransactions : undefined },
+  );
 
   return (
     <div className="flex flex-col gap-6">

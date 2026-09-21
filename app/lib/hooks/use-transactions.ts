@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/app/lib/api/client";
 import { queryKeys } from "@/app/lib/api/keys";
+import { fetchTransactions } from "@/app/lib/api/queries";
 import type {
   CreateTransactionInput,
   Transaction,
@@ -10,23 +11,18 @@ import type {
   UpdateTransactionInput,
 } from "@/app/lib/api/types";
 
-function buildTransactionsQuery(filters: TransactionFilters = {}) {
-  const params = new URLSearchParams();
+type UseTransactionsOptions = {
+  initialData?: Transaction[];
+};
 
-  if (filters.search) params.set("search", filters.search);
-  if (filters.type) params.set("type", filters.type);
-  if (filters.category) params.set("category", filters.category);
-  if (filters.month) params.set("month", filters.month);
-  if (filters.limit) params.set("limit", String(filters.limit));
-
-  const query = params.toString();
-  return query ? `/transactions?${query}` : "/transactions";
-}
-
-export function useTransactions(filters: TransactionFilters = {}) {
+export function useTransactions(
+  filters: TransactionFilters = {},
+  options: UseTransactionsOptions = {},
+) {
   return useQuery({
     queryKey: queryKeys.transactions.all(filters),
-    queryFn: () => api<Transaction[]>(buildTransactionsQuery(filters)),
+    queryFn: () => fetchTransactions(filters),
+    initialData: options.initialData,
   });
 }
 
