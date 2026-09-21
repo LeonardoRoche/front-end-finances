@@ -1,15 +1,12 @@
 import { BudgetProgress } from "@/app/components/budget/BudgetProgress";
 import { formatarParaBRLCode } from "@/app/lib/utils/CurrencyFormater";
-import { categoryConfig, TransactionType } from "./Transactions";
+import { getCategoryConfig } from "@/app/lib/categories";
+import type { BudgetPreviewProps } from "@/app/types/home";
 
-type BudgetsProps = {
-  type: TransactionType;
-  amount: number;
-  limit: number;
-};
+export type { BudgetPreviewProps };
 
-export const Budgets = ({ type, amount, limit }: BudgetsProps) => {
-  const { label, icon, iconBg, iconColor } = categoryConfig[type];
+export const Budgets = ({ budget }: BudgetPreviewProps) => {
+  const { label, icon, iconBg, iconColor } = getCategoryConfig(budget.title);
 
   return (
     <div className="flex flex-col gap-2 border-b border-border py-3 last:border-b-0">
@@ -23,16 +20,18 @@ export const Budgets = ({ type, amount, limit }: BudgetsProps) => {
           <h3 className="truncate text-sm font-medium">{label}</h3>
         </div>
         <p className="shrink-0 text-sm tabular-nums">
-          <span className="font-semibold">{formatarParaBRLCode(amount)}</span>
+          <span className="font-semibold">
+            {formatarParaBRLCode(budget.amount)}
+          </span>
           <span className="text-muted-foreground">
             {" "}
-            / {formatarParaBRLCode(limit)}
+            / {formatarParaBRLCode(budget.totalAmount)}
           </span>
         </p>
       </div>
       <BudgetProgress
-        spent={amount}
-        limit={limit}
+        spent={budget.amount}
+        limit={budget.totalAmount}
         label={`Uso do orçamento de ${label}`}
       />
     </div>
