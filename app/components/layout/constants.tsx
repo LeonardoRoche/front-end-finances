@@ -1,4 +1,9 @@
-import { ArrowRightLeft, LayoutDashboard, PieChart } from "lucide-react";
+import {
+  ArrowRightLeft,
+  Landmark,
+  LayoutDashboard,
+  PieChart,
+} from "lucide-react";
 
 export const AppSideBarTitles = [
   {
@@ -15,5 +20,10 @@ export const AppSideBarTitles = [
     Title: "Orçamentos",
     Icon: <PieChart size={16} />,
     Link: "/budget",
+  },
+  {
+    Title: "Conexões",
+    Icon: <Landmark size={16} />,
+    Link: "/connections",
   },
 ];
