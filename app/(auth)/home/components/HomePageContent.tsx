@@ -84,8 +84,8 @@ export const HomePageContent = ({
       <OpenFinanceBanner />
 
       {isSummaryLoading ? (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, index) => (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {Array.from({ length: 5 }).map((_, index) => (
             <Skeleton key={index} className="h-32 rounded-xl" />
           ))}
         </div>

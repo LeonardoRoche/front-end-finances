@@ -1,72 +1,66 @@
 # Front-end Finances
 
-Aplicação web de finanças pessoais construída com **Next.js 16** e **React 19**. Consome a API [`backend-finances-api`](https://github.com/LeonardoRoche/backend-finances-api) para exibir dashboard, transações, orçamentos e conexões bancárias via Open Finance (Pluggy).
+Aplicação web de **finanças pessoais** construída com **Next.js 16**, **React 19** e **React Query**. Integra com Open Finance (Pluggy) para dashboard, transações, orçamentos, investimentos e conexões bancárias.
 
 ## Funcionalidades
 
-- **Visão geral** — KPIs de saldo, gastos, PIX/TED e cartões de crédito
+- **Visão geral** — saldo, gastos, PIX/TED, cartões e **total investido**
 - **Transações** — listagem, filtros, criação, edição e exclusão
 - **Orçamentos** — limites por categoria com acompanhamento de gastos
 - **Conexões** — conectar bancos, sincronizar e recategorizar transações
+- **SSR** — dados pré-carregados no servidor com `initialData` no React Query
+
+## Stack
+
+| Área | Tecnologia |
+|------|------------|
+| Framework | Next.js 16 (App Router) |
+| UI | Tailwind CSS 4, Base UI, Lucide |
+| Estado servidor | TanStack React Query v5 |
+| Open Finance | Pluggy Connect SDK |
+| Linguagem | TypeScript |
 
 ## Pré-requisitos
 
 - Node.js 20+
 - npm
-- API backend rodando em `http://localhost:3001`
+- [backend-finances-api](https://github.com/LeonardoRoche/backend-finances-api) rodando
 
 ## Como rodar
-
-1. Clone o repositório:
 
 ```bash
 git clone git@github.com:LeonardoRoche/front-end-finances.git
 cd front-end-finances
-```
-
-2. Instale as dependências:
-
-```bash
 npm install
-```
-
-3. Configure as variáveis de ambiente:
-
-```bash
 cp .env.example .env
-```
-
-4. Inicie o servidor de desenvolvimento:
-
-```bash
 npm run dev
 ```
 
-5. Acesse [http://localhost:3000](http://localhost:3000)
+Acesse [http://localhost:3000](http://localhost:3000).
 
 ## Variáveis de ambiente
 
-| Variável | Descrição | Exemplo |
-|----------|-----------|---------|
-| `NEXT_PUBLIC_API_URL` | URL da API backend | `http://localhost:3001` |
+| Variável | Descrição |
+|----------|-----------|
+| `NEXT_PUBLIC_API_URL` | URL da API (`http://localhost:3001`) |
 
 ## Scripts
 
 | Comando | Descrição |
 |---------|-----------|
-| `npm run dev` | Servidor de desenvolvimento |
+| `npm run dev` | Desenvolvimento |
 | `npm run build` | Build de produção |
-| `npm run start` | Servidor de produção |
+| `npm run start` | Produção |
 | `npm run lint` | ESLint |
 
-## Estrutura principal
+## Estrutura
 
 ```
 app/
-├── (auth)/          # Páginas autenticadas (home, transaction, budget, connections)
-├── components/      # Componentes reutilizáveis
-├── lib/             # API client, hooks e utilitários
-└── types/           # Tipos TypeScript por área da aplicação
+├── (auth)/       # home, transaction, budget, connections
+├── components/   # UI reutilizável
+├── lib/          # API, hooks, utils
+└── types/        # tipos por área
 ```
 
 ## Repositório relacionado

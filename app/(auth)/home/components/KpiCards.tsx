@@ -3,6 +3,7 @@ import {
   ArrowLeftRight,
   ArrowUpCircle,
   CreditCard,
+  LineChart,
   Wallet,
 } from "lucide-react";
 import { cn } from "cn";
@@ -54,10 +55,11 @@ const MetricCard = ({
 export const KpiCards = ({ summary }: KpiCardsProps) => {
   const hasAccounts = summary.bankAccounts.length > 0;
   const hasCards = summary.creditCards.length > 0;
+  const hasInvestments = summary.investmentAccounts.length > 0;
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <MetricCard
           label="Saldo em conta"
           value={formatarParaBRLCode(summary.bankBalance)}
@@ -101,7 +103,61 @@ export const KpiCards = ({ summary }: KpiCardsProps) => {
           chip="bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300"
           valueClass="text-amber-800 dark:text-amber-300"
         />
+
+        <MetricCard
+          label="Total investido"
+          value={formatarParaBRLCode(summary.investmentTotal)}
+          hint={
+            hasInvestments
+              ? "Carteira de investimentos via Open Finance"
+              : "Sincronize em Conexões para ver investimentos"
+          }
+          icon={<LineChart size={18} />}
+          accent="from-violet-500/15 to-purple-500/5"
+          chip="bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-300"
+          valueClass="text-violet-700 dark:text-violet-300"
+        />
       </div>
+
+      {hasInvestments ? (
+        <div className="surface-card p-5">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <h3 className="font-semibold">Investimentos</h3>
+              <p className="text-sm text-muted-foreground">
+                Posição consolidada das contas de investimento
+              </p>
+            </div>
+            <div className="flex size-10 items-center justify-center rounded-xl bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-300">
+              <LineChart size={18} />
+            </div>
+          </div>
+
+          <div className="mb-4 rounded-xl bg-muted/40 p-3">
+            <p className="text-xs text-muted-foreground">Patrimônio investido</p>
+            <p className="text-2xl font-bold tabular-nums">
+              {formatarParaBRLCode(summary.investmentTotal)}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            {summary.investmentAccounts.map((account) => (
+              <div
+                key={account.id}
+                className="rounded-xl border border-border/70 bg-card p-4"
+              >
+                <p className="font-medium">{account.name}</p>
+                <p className="text-xs text-muted-foreground capitalize">
+                  {account.subtype.replace(/_/g, " ").toLowerCase()}
+                </p>
+                <p className="mt-2 text-xl font-bold tabular-nums">
+                  {formatarParaBRLCode(account.balance)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       {hasCards ? (
         <div className="surface-card p-5">
