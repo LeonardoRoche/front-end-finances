@@ -16,7 +16,7 @@ export default async function HomePage() {
   const [initialSummary, initialTransactions, initialBudgets] =
     await Promise.all([
       safeServerFetch(() => fetchDashboardSummary(month)),
-      safeServerFetch(() => fetchTransactions({ limit: 5, month })),
+      safeServerFetch(() => fetchTransactions({ page: 1, pageSize: 5, month })),
       safeServerFetch(() => fetchBudgets(3, month)),
     ]);
 

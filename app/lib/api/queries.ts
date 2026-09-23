@@ -3,7 +3,7 @@ import type {
   Budget,
   Connection,
   DashboardSummary,
-  Transaction,
+  PaginatedTransactions,
   TransactionFilters,
 } from "@/app/lib/api/types";
 
@@ -24,6 +24,8 @@ export function buildTransactionsPath(filters: TransactionFilters = {}): string 
   if (filters.type) params.set("type", filters.type);
   if (filters.category) params.set("category", filters.category);
   if (filters.month) params.set("month", filters.month);
+  if (filters.page) params.set("page", String(filters.page));
+  if (filters.pageSize) params.set("pageSize", String(filters.pageSize));
   if (filters.limit) params.set("limit", String(filters.limit));
 
   const query = params.toString();
@@ -47,8 +49,8 @@ export function fetchBudgets(
 
 export function fetchTransactions(
   filters: TransactionFilters = {},
-): Promise<Transaction[]> {
-  return apiFetch<Transaction[]>(buildTransactionsPath(filters), {
+): Promise<PaginatedTransactions> {
+  return apiFetch<PaginatedTransactions>(buildTransactionsPath(filters), {
     cache: "no-store",
   });
 }

@@ -23,6 +23,7 @@ import { useDeleteTransaction } from "@/app/lib/hooks/use-transactions";
 import { formatarParaBRLCode } from "@/app/lib/utils/CurrencyFormater";
 import { formatarDataAbreviada } from "@/app/lib/utils/DateFormatter";
 import { TransactionDialog } from "./TransactionDialog";
+import { TransactionsPagination } from "./TransactionsPagination";
 
 export type { TransactionsTableProps };
 
@@ -30,6 +31,7 @@ export const TransactionsTable = ({
   transactions,
   isLoading,
   isError,
+  pagination,
 }: TransactionsTableProps) => {
   const [editTransaction, setEditTransaction] = useState<Transaction | null>(
     null,
@@ -191,6 +193,10 @@ export const TransactionsTable = ({
             )}
           </TableBody>
         </Table>
+
+        {!isLoading && !isError && pagination ? (
+          <TransactionsPagination {...pagination} />
+        ) : null}
       </div>
 
       <Dialog

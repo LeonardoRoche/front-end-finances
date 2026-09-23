@@ -6,13 +6,14 @@ import { queryKeys } from "@/app/lib/api/keys";
 import { fetchTransactions } from "@/app/lib/api/queries";
 import type {
   CreateTransactionInput,
+  PaginatedTransactions,
   Transaction,
   TransactionFilters,
   UpdateTransactionInput,
 } from "@/app/lib/api/types";
 
 type UseTransactionsOptions = {
-  initialData?: Transaction[];
+  initialData?: PaginatedTransactions;
 };
 
 export function useTransactions(

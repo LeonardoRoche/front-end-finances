@@ -54,11 +54,12 @@ export const HomePageContent = ({
     month,
     { initialData: initialSummary },
   );
-  const { data: transactions = [], isLoading: isTransactionsLoading } =
+  const { data: transactionsResult, isLoading: isTransactionsLoading } =
     useTransactions(
-      { limit: 5, month },
+      { page: 1, pageSize: 5, month },
       { initialData: initialTransactions },
     );
+  const transactions = transactionsResult?.data ?? [];
   const { data: budgets = [], isLoading: isBudgetsLoading } = useBudgets(
     3,
     month,

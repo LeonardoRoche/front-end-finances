@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import type {
+  PaginatedTransactions,
   Transaction,
   TransactionTypeFilter,
 } from "@/app/lib/api/types";
@@ -33,10 +34,19 @@ export type TransactionPageFilterState = {
   period: PeriodFilterValue;
 };
 
+export type TransactionsPaginationProps = {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+};
+
 export type TransactionsTableProps = {
   transactions: Transaction[];
   isLoading?: boolean;
   isError?: boolean;
+  pagination?: TransactionsPaginationProps;
 };
 
 export type TransactionsFilterProps = {
@@ -62,5 +72,5 @@ export type NewTransactionDialogProps = {
 
 export type TransactionsPageContentProps = {
   month: string;
-  initialTransactions?: Transaction[];
+  initialTransactions?: PaginatedTransactions;
 };

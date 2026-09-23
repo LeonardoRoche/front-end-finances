@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { NewTransactionDialog } from "./NewTransactionDialog";
@@ -18,6 +18,7 @@ import {
   TRANSACTION_TYPE_ALL,
 } from "@/app/types/transaction";
 import type { TransactionsPageContentProps } from "@/app/types/transaction";
+import { TRANSACTIONS_PAGE_SIZE } from "../constants";
 import { TransactionsFilter } from "./TransactionsFilter";
 import { TransactionsTable } from "./TransactionsTable";
 
@@ -33,6 +34,7 @@ export const TransactionsPageContent = ({
     TRANSACTION_CATEGORY_ALL,
   );
   const [period, setPeriod] = useState<PeriodFilterValue>("Este mês");
+  const [page, setPage] = useState(1);
 
   const filters = useMemo<TransactionFilters>(
     () => ({
@@ -40,20 +42,30 @@ export const TransactionsPageContent = ({
       type: type === TRANSACTION_TYPE_ALL ? undefined : type,
       category: category === TRANSACTION_CATEGORY_ALL ? undefined : category,
       month: periodToMonth(period) ?? month,
+      page,
+      pageSize: TRANSACTIONS_PAGE_SIZE,
     }),
-    [search, type, category, period, month],
+    [search, type, category, period, month, page],
   );
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, type, category, period]);
 
   const isDefaultFilters =
     !filters.search &&
     !filters.type &&
     !filters.category &&
-    filters.month === month;
+    filters.month === month &&
+    page === 1;
 
-  const { data: transactions = [], isLoading, isError } = useTransactions(
-    filters,
-    { initialData: isDefaultFilters ? initialTransactions : undefined },
-  );
+  const { data, isLoading, isError } = useTransactions(filters, {
+    initialData: isDefaultFilters ? initialTransactions : undefined,
+  });
+
+  const transactions = data?.data ?? [];
+  const total = data?.total ?? 0;
+  const totalPages = data?.totalPages ?? 0;
 
   return (
     <div className="flex flex-col gap-6">
@@ -85,6 +97,13 @@ export const TransactionsPageContent = ({
           transactions={transactions}
           isLoading={isLoading}
           isError={isError}
+          pagination={{
+            page,
+            pageSize: TRANSACTIONS_PAGE_SIZE,
+            total,
+            totalPages,
+            onPageChange: setPage,
+          }}
         />
       </div>
     </div>

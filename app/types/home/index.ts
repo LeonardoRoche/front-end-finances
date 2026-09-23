@@ -1,5 +1,10 @@
 import type { ReactNode } from "react";
-import type { Budget, DashboardSummary, Transaction } from "@/app/lib/api/types";
+import type {
+  Budget,
+  DashboardSummary,
+  PaginatedTransactions,
+  Transaction,
+} from "@/app/lib/api/types";
 
 export type SectionHeaderProps = {
   title: string;
@@ -36,6 +41,6 @@ export type BudgetPreviewProps = {
 export type HomePageContentProps = {
   month: string;
   initialSummary?: DashboardSummary;
-  initialTransactions?: Transaction[];
+  initialTransactions?: PaginatedTransactions;
   initialBudgets?: Budget[];
 };

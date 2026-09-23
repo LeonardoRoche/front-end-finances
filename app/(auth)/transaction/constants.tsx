@@ -26,6 +26,8 @@ export const categoryOptions: FilterOption<string>[] = [
   })),
 ];
 
+export const TRANSACTIONS_PAGE_SIZE = 10;
+
 export const periodOptions: FilterOption<PeriodFilterValue>[] = [
   { value: "Este mês", label: "Este mês" },
   { value: "Mês passado", label: "Mês passado" },

@@ -59,7 +59,18 @@ export type TransactionFilters = {
   type?: TransactionTypeFilter;
   category?: string;
   month?: string;
+  page?: number;
+  pageSize?: number;
+  /** @deprecated use pageSize */
   limit?: number;
+};
+
+export type PaginatedTransactions = {
+  data: Transaction[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
 };
 
 export type CreateTransactionInput = {
