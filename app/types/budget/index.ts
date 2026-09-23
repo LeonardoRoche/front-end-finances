@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { Budget } from "@/app/lib/api/types";
+import type { AllocationSummary } from "@/app/lib/utils/allocation";
 
 export type BudgetDialogProps = {
   budget?: Budget;
@@ -26,4 +27,16 @@ export type BudgetProgressProps = {
 export type BudgetPageContentProps = {
   month: string;
   initialBudgets?: Budget[];
+};
+
+export type BudgetPlanDialogProps = {
+  month: string;
+  budgets: Budget[];
+  onSuccess?: () => void;
+};
+
+export type AllocationSummaryBarProps = {
+  fixedIncome: number;
+  investmentReserve: number;
+  summary: AllocationSummary;
 };
